@@ -1,0 +1,26 @@
+# builders:
+#   # name of the builder
+#   member_count:
+#     # library URI containing the builder - maps to `lib/member_count_library_generator.dart`
+#     import: "package:com.android.application/builder.dart"
+#     # Name of the function in the above library to call.
+#     builder_factories: ["metadataLibraryBuilder"]
+#     # The mapping from the source extension to the generated file extension
+#     build_extensions: {".dart": [".g.dart"]}
+#     # Will automatically run on any package that depends on it
+#     auto_apply: dependents
+#     # Generate the output directly into the package, not to a hidden cache dir
+#     build_to: source
+
+targets:
+  $default:
+    builders:
+      com.example.kolmuthal|myBuilder:
+        options:
+          foo: bar
+builders:
+  myBuilder:
+    import: 'package:com.example.kolmuthal/**/models/*.dart'
+    builder_factories: ["myBuilder"]
+    build_extensions: {"$lib$": ["*.dart"]}
+    auto_apply: root_package

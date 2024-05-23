@@ -1,7 +1,10 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:kolmuthal/data/MyDataSource.dart';
+// import 'package:kolmuthal/models/businessuser.dart';
 import 'package:provider/provider.dart';
+//import 'package:realm/realm.dart';
 
 void main() {
   runApp(const MyApp());
@@ -68,6 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         page = FavoritePage();
         break;
+      case 2:
+        page = GridViewPage();
+        break;
+      case 3:
+        page = DataTablePage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -87,6 +96,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   NavigationRailDestination(
                     icon: Icon(Icons.favorite),
                     label: Text('Favorites'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.grid_view),
+                    label: Text('Grid View'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.table_view),
+                    label: Text('Data Table'),
                   ),
                 ],
                 selectedIndex: selectedIndex,
@@ -215,6 +232,68 @@ class BigCard extends StatelessWidget {
   }
 }
 
+class GridViewPage extends StatelessWidget {
+  const GridViewPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
+    if (appState.favorites.isEmpty) {
+      return Center(
+        child: Text('No data found.'),
+      );
+    }
+
+    return GridView.count(
+      // Create a grid with 2 columns. If you change the scrollDirection to
+      // horizontal, this produces 2 rows.
+      crossAxisCount: 2,
+      // Generate 100 widgets that display their index in the List.
+      children: List.generate(appState.favorites.length, (index) {
+        return Center(
+          child: Text(
+            'Item ' + appState.favorites[index].asLowerCase,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class DataTablePage extends StatelessWidget {
+  const DataTablePage({super.key});
+
+//  const DataTableSource dataSource = MyDataSource();
+
+  @override
+  Widget build(BuildContext context) {
+    // final config = Configuration.local([Businessuser.schema]);
+    // final realm = Realm(config);
+
+    // final busers = realm.all<Businessuser>();
+    // final myBuyer = busers[0];
+    // print('My User is ${myBuyer.name} ${myBuyer.age}');
+
+    return PaginatedDataTable(
+      columns: const <DataColumn>[
+        DataColumn(
+          label: Text('Name'),
+        ),
+        DataColumn(
+          label: Text('Age'),
+        ),
+        DataColumn(
+          label: Text('Role'),
+        ),
+      ],
+      source: MyDataSource(),
+    );
+  }
+}
 // class _MyHomePageState extends State<MyHomePage> {
 //   int _counter = 0;
 
